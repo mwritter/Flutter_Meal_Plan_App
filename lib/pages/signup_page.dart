@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-class LoginPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LoginPageState();
+    return _SignUpPage();
   }
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignUpPage extends State<SignUpPage> {
   final formKey = new GlobalKey<FormState>();
 
   String _email;
   String _password;
+  String _confirmPassword;
 
   bool validateAndSave() {
     final form = formKey.currentState;
@@ -32,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       padding: EdgeInsets.only(left: 30.0, top: fromTop),
       child: Text(
-        "Login",
+        "Sign up",
         style: TextStyle(
           fontSize: 90.0,
           fontWeight: FontWeight.bold,
@@ -53,6 +54,19 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget _buildConfirmPasswordTextField() {
+    return Container(
+      child: TextFormField(
+        validator: (value) => value.isEmpty && value == _password
+            ? 'Confirm Password incorrect'
+            : null,
+        obscureText: true,
+        decoration: InputDecoration(labelText: 'confirm password'),
+        onSaved: (value) => _confirmPassword = value,
+      ),
+    );
+  }
+
   Widget _buildEmailTextField() {
     return Container(
       child: TextFormField(
@@ -66,18 +80,9 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginButton() {
-    return FlatButton(
-      onPressed: () {},
-      child: Text("login"),
-    );
-  }
-
   Widget _buildSignUpButton() {
     return FlatButton(
-      onPressed: () {
-        Navigator.pushNamed(context, '/signup');
-      },
+      onPressed: () {},
       child: Text("sign up"),
     );
   }
@@ -88,19 +93,20 @@ class _LoginPageState extends State<LoginPage> {
       child: Form(
         key: formKey,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             _buildEmailTextField(),
             SizedBox(
               height: 12.0,
             ),
             _buildPasswordTextField(),
+            _buildConfirmPasswordTextField(),
             SizedBox(
               height: 12.0,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _buildLoginButton(),
                 _buildSignUpButton(),
               ],
             ),
@@ -122,9 +128,29 @@ class _LoginPageState extends State<LoginPage> {
               child: _buildPageTitleText(context),
             ),
             SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
+              height: 15.0,
             ),
             _buildLoginForm(),
+            Container(
+              child: Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
