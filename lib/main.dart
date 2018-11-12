@@ -15,5 +15,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-//cloned project, testing and pushing my branch up
