@@ -10,12 +10,6 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPage extends State<SignUpPage> {
   final formKey = new GlobalKey<FormState>();
 
-
-  String other2;
-
-
-  String other1;
-
   String _email;
   String _password;
   String _confirmPassword;
