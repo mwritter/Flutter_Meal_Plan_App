@@ -17,15 +17,38 @@ class LoginPage extends StatelessWidget {
   }
 
   Widget _buildPasswordTextField() {
-    return TextFormField(
-      obscureText: true,
-      decoration: InputDecoration(labelText: 'password'),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      child: TextFormField(
+        obscureText: true,
+        decoration: InputDecoration(labelText: 'password'),
+      ),
     );
   }
 
   Widget _buildEmailTextField() {
-    return TextFormField(
-      decoration: InputDecoration(labelText: 'email'),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15.0),
+      child: TextFormField(
+        keyboardType: TextInputType.emailAddress,
+        decoration: InputDecoration(
+          labelText: 'email',
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoginButton() {
+    return FlatButton(
+      onPressed: () {},
+      child: Text("login"),
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return FlatButton(
+      onPressed: () {},
+      child: Text("sign up"),
     );
   }
 
@@ -34,7 +57,17 @@ class LoginPage extends StatelessWidget {
       margin: EdgeInsets.symmetric(horizontal: 15.0),
       child: Form(
         child: Column(
-          children: <Widget>[_buildEmailTextField(), _buildPasswordTextField()],
+          children: <Widget>[
+            _buildEmailTextField(),
+            _buildPasswordTextField(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildLoginButton(),
+                _buildSignUpButton(),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -43,6 +76,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Container(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
