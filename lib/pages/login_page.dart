@@ -65,7 +65,13 @@ class _LoginPageState extends State<LoginPage> {
     return Container(
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-        validator: (value) => value.isEmpty ? 'Email required' : null,
+        validator: (String value) {
+          if (value.isEmpty ||
+              !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                  .hasMatch(value)) {
+            return 'Please enter a valid email';
+          }
+        },
         decoration: InputDecoration(
           labelText: 'email',
         ),

@@ -67,7 +67,7 @@ class _SignUpPage extends State<SignUpPage> {
   Widget _buildConfirmPasswordTextField() {
     return Container(
       child: TextFormField(
-        validator: (value) => value.isEmpty && value == _password
+        validator: (value) => value.isEmpty && value != _password
             ? 'Confirm Password incorrect'
             : null,
         obscureText: true,
@@ -81,7 +81,13 @@ class _SignUpPage extends State<SignUpPage> {
     return Container(
       child: TextFormField(
         keyboardType: TextInputType.emailAddress,
-        validator: (value) => value.isEmpty ? 'Email required' : null,
+        validator: (String value) {
+          if (value.isEmpty ||
+              !RegExp(r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
+                  .hasMatch(value)) {
+            return 'Please enter a valid email';
+          }
+        },
         decoration: InputDecoration(
           labelText: 'email',
         ),
