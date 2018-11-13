@@ -26,7 +26,7 @@ class _SignUpPage extends State<SignUpPage> {
         UserManagement().storeNewUser(signedInUser, context);
         Navigator.of(context).pushReplacementNamed('/');
       }).catchError((e) {
-        print(e);
+        print(e.message);
       });
       return true;
     } else {

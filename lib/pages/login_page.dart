@@ -18,12 +18,13 @@ class _LoginPageState extends State<LoginPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
+
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((FirebaseUser user) {
         Navigator.of(context).pushReplacementNamed('/homepage');
       }).catchError((e) {
-        print(e);
+        print(e.message);
       });
       return true;
     } else {

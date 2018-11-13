@@ -8,6 +8,7 @@ class HomePage extends StatelessWidget {
         body: Container(
       child: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text("HomePage"),
             RaisedButton(
