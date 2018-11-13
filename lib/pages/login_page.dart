@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -22,7 +23,8 @@ class _LoginPageState extends State<LoginPage> {
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((FirebaseUser user) {
-        Navigator.of(context).pushReplacementNamed('/homepage');
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (BuildContext context) => HomePage()));
       }).catchError((e) {
         print(e.message);
       });

@@ -118,6 +118,9 @@ class _SignUpPage extends State<SignUpPage> {
               height: 12.0,
             ),
             _buildPasswordTextField(),
+            SizedBox(
+              height: 12.0,
+            ),
             _buildConfirmPasswordTextField(),
             SizedBox(
               height: 12.0,
