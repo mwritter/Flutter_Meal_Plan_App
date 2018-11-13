@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,6 +18,13 @@ class _LoginPageState extends State<LoginPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
+      FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: _email, password: _password)
+          .then((FirebaseUser user) {
+        Navigator.of(context).pushReplacementNamed('/homepage');
+      }).catchError((e) {
+        print(e);
+      });
       return true;
     } else {
       return false;
@@ -68,7 +76,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildLoginButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        validateAndSave();
+      },
       child: Text("login"),
     );
   }

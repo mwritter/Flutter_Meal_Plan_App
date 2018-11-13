@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "107513651082",
+    "firebase_url": "https://meal-plan-4a1ce.firebaseio.com",
+    "project_id": "meal-plan-4a1ce",
+    "storage_bucket": "meal-plan-4a1ce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:107513651082:android:b9e27208b96d9000",
+        "android_client_info": {
+          "package_name": "com.ritter.matthew.mealplan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "107513651082-1j3uudui32n1n5jevu90bohebf09jcup.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyARzeKjlu9Mjqd-pu38odTnTivBy3MiWgE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

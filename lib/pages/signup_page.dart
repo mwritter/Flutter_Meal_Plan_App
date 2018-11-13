@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../services/user_management.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -18,6 +20,14 @@ class _SignUpPage extends State<SignUpPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
+      FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: _email, password: _password)
+          .then((signedInUser) {
+        UserManagement().storeNewUser(signedInUser, context);
+        Navigator.of(context).pushReplacementNamed('/');
+      }).catchError((e) {
+        print(e);
+      });
       return true;
     } else {
       return false;
@@ -82,7 +92,9 @@ class _SignUpPage extends State<SignUpPage> {
 
   Widget _buildSignUpButton() {
     return FlatButton(
-      onPressed: () {},
+      onPressed: () {
+        validateAndSave();
+      },
       child: Text("sign up"),
     );
   }
@@ -139,12 +151,18 @@ class _SignUpPage extends State<SignUpPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        )
+                        Container(
+                          padding: EdgeInsets.only(bottom: 15.0),
+                          child: IconButton(
+                            iconSize: 35.0,
+                            icon: Icon(
+                              Icons.close,
+                            ),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                        ),
                       ],
                     )
                   ],
