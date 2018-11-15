@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/meal.dart';
+import './meal_detail_page.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -29,6 +31,17 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Widget _buildMealDetails() {
+    Meal meal = new Meal("Pizza", "Its so so good", 'food4.jpg');
+    return RaisedButton(
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => MealDetailPage(meal)));
+      },
+      child: Text("Meal Detail Page"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,6 +50,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _buildMealDetails(),
             Text("HomePage"),
             StreamBuilder(
               stream: Firestore.instance.collection('users').snapshots(),
@@ -67,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                 });
               },
               child: Text("Logout"),
-            )
+            ),
           ],
         ),
       ),
