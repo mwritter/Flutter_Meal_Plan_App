@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/meal.dart';
 import './meal_detail_page.dart';
+import './shopping_list.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -42,6 +43,16 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildShoppingList() {
+    return RaisedButton(
+      onPressed: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ShoppingList()));
+      },
+      child: Text("Shopping List Page"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,6 +61,7 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _buildShoppingList(),
             _buildMealDetails(),
             Text("HomePage"),
             StreamBuilder(
