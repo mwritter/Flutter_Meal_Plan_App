@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meal_plan/models/user_model.dart';
 
 class HomePage extends StatefulWidget {
+  final UserModel user;
+  HomePage(this.user);
   @override
   State<StatefulWidget> createState() {
     return _HomePageState();
@@ -11,6 +14,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   String email = '';
+  String image = '';
 
   Future _buildUserInfo() async {
     var user = await FirebaseAuth.instance.currentUser();
@@ -21,7 +25,7 @@ class _HomePageState extends State<HomePage> {
     userQuery.getDocuments().then((data) {
       if (data.documents.length > 0) {
         setState(() {
-          email = data.documents[0].data['email'];
+          email = data.documents[0]['email'];
         });
       } else {
         email = "no email";
@@ -55,7 +59,16 @@ class _HomePageState extends State<HomePage> {
                   );
                 }
 
-                return Text(email);
+                return Container(
+                  child: Column(
+                    children: <Widget>[
+                      Image(
+                        image: NetworkImage(image),
+                      ),
+                      Text(email)
+                    ],
+                  ),
+                );
               },
             ),
             RaisedButton(
@@ -77,6 +90,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     _buildUserInfo();
+    email = widget.user.email;
+    image = widget.user.image;
     super.initState();
   }
 }

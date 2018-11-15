@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import '../pages/home_page.dart';
+import '../services/user_management.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -15,27 +14,16 @@ class _LoginPageState extends State<LoginPage> {
   String _email;
   String _password;
 
-  bool validateAndSave() {
+  bool validateAndSave(BuildContext context) {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-
-      FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: _email, password: _password)
-          .then((FirebaseUser user) {
-        Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (BuildContext context) => HomePage()));
-      }).catchError((e) {
-        print(e.message);
-      });
+      UserManagement um = new UserManagement();
+      um.loginUser(_email, _password, context);
       return true;
     } else {
       return false;
     }
-  }
-
-  void validateAndSubmit() {
-    if (validateAndSave()) {}
   }
 
   Widget _buildPageTitleText(BuildContext context) {
@@ -83,10 +71,10 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginButton() {
+  Widget _buildLoginButton(BuildContext context) {
     return FlatButton(
       onPressed: () {
-        validateAndSave();
+        validateAndSave(context);
       },
       child: Text("login"),
     );
@@ -101,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Widget _buildLoginForm() {
+  Widget _buildLoginForm(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 30.0),
       child: Form(
@@ -119,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _buildLoginButton(),
+                _buildLoginButton(context),
                 _buildSignUpButton(),
               ],
             ),
@@ -143,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(
               height: MediaQuery.of(context).size.height / 6,
             ),
-            _buildLoginForm(),
+            _buildLoginForm(context),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../services/user_management.dart';
+import './home_page.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -11,7 +12,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPage extends State<SignUpPage> {
   final formKey = new GlobalKey<FormState>();
-
+  bool loading = false;
   String _email;
   String _password;
   String _confirmPassword;
@@ -20,11 +21,16 @@ class _SignUpPage extends State<SignUpPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
+      setState(() {
+        loading = true;
+      });
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: _email, password: _password)
           .then((signedInUser) {
+        setState(() {
+          loading = false;
+        });
         UserManagement().storeNewUser(signedInUser, context);
-        Navigator.of(context).pushReplacementNamed('/');
       }).catchError((e) {
         print(e.message);
       });
@@ -101,7 +107,7 @@ class _SignUpPage extends State<SignUpPage> {
       onPressed: () {
         validateAndSave();
       },
-      child: Text("sign up"),
+      child: loading ? CircularProgressIndicator() : Text("sign up"),
     );
   }
 
