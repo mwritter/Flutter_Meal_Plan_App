@@ -195,13 +195,20 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         bottomNavigationBar: BottomNavigationBar(
+            fixedColor: Color(0xFF356859),
             onTap: onTabButtonBar,
             currentIndex: _currentIndex,
             items: [
               BottomNavigationBarItem(
-                  icon: Icon(Icons.home), title: Text("Home")),
+                  icon: Icon(
+                    Icons.home,
+                  ),
+                  title: Text("Home")),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.list), title: Text("Shopping List")),
+                  icon: Icon(
+                    Icons.list,
+                  ),
+                  title: Text("Shopping List")),
             ]),
         body: _currentIndex == 0
             ? Container(
