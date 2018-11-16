@@ -24,7 +24,7 @@ class _SignUpPage extends State<SignUpPage> {
           .createUserWithEmailAndPassword(email: _email, password: _password)
           .then((signedInUser) {
         UserManagement().storeNewUser(signedInUser, context);
-        Navigator.of(context).pushReplacementNamed('/');
+        //Navigator.of(context).pushReplacementNamed('/');
       }).catchError((e) {
         print(e.message);
       });
