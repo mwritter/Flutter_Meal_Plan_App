@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meal_plan/models/user_model.dart';
+import 'package:meal_plan/pages/login_page.dart';
 import '../models/meal.dart';
 import './meal_detail_page.dart';
 import './shopping_list.dart';
@@ -131,27 +132,61 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildUserContainer() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        contentPadding: EdgeInsets.all(20.0),
-        title: Text(
-          widget.user.email,
-          style: TextStyle(
-            color: Color(0xFF8A9098),
-            fontSize: 25.0,
+    return GestureDetector(
+      onLongPress: () => showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(widget.user.email),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Text("Would you like to log out?"),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('Cancel'),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut().then((value) {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushReplacementNamed('/');
+                    }).catchError((e) {
+                      print(e.message);
+                    });
+                  },
+                  child: Text('Logout'),
+                )
+              ],
+            );
+          }),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: ListTile(
+          contentPadding: EdgeInsets.all(20.0),
+          title: Text(
+            widget.user.email,
+            style: TextStyle(
+              color: Color(0xFF8A9098),
+              fontSize: 25.0,
+            ),
           ),
-        ),
-        leading: Container(
-          height: 75.0,
-          width: 75.0,
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: 2.0),
-              shape: BoxShape.circle,
-              image: DecorationImage(
-                fit: BoxFit.cover,
-                image: NetworkImage('${widget.user.image}'),
-              )),
+          leading: Container(
+            height: 75.0,
+            width: 75.0,
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.white, width: 2.0),
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: NetworkImage('${widget.user.image}'),
+                )),
+          ),
         ),
       ),
     );
@@ -185,6 +220,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildBottomNav() {
+    return BottomNavigationBar(
+        fixedColor: Color(0xFF356859),
+        onTap: onTabButtonBar,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+              ),
+              title: Text("Home")),
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.list,
+              ),
+              title: Text("Shopping List")),
+        ]);
+  }
+
   void onTabButtonBar(int index) {
     setState(() {
       _currentIndex = index;
@@ -194,22 +248,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: BottomNavigationBar(
-            fixedColor: Color(0xFF356859),
-            onTap: onTabButtonBar,
-            currentIndex: _currentIndex,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.home,
-                  ),
-                  title: Text("Home")),
-              BottomNavigationBarItem(
-                  icon: Icon(
-                    Icons.list,
-                  ),
-                  title: Text("Shopping List")),
-            ]),
+        bottomNavigationBar: _buildBottomNav(),
         body: _currentIndex == 0
             ? Container(
                 child: ListView(
