@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meal_plan/models/user_model.dart';
-import 'package:meal_plan/pages/login_page.dart';
+import 'package:meal_plan/pages/meal_plan_page.dart';
 import '../models/meal.dart';
 import './meal_detail_page.dart';
 import './shopping_list.dart';
@@ -193,28 +193,40 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildMyPlanContainer() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0),
-        color: Colors.white,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-              color: const Color(0x29000000),
-              offset: Offset(0.0, 2.0),
-              blurRadius: 1.0),
-        ],
-      ),
-      margin:
-          EdgeInsets.only(left: 20.0, right: 20.0, top: 45.0, bottom: 100.0),
-      height: 130.0,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 25.0, left: 20),
-        child: Text(
-          "My Plan",
-          style: TextStyle(
-              color: Color(0xFF8A9098),
-              fontSize: 50.0,
-              fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => MealPlanPage(widget.user)));
+      },
+      child: Hero(
+        tag: "MyPlanContainer",
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: Colors.white,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: const Color(0x29000000),
+                  offset: Offset(0.0, 2.0),
+                  blurRadius: 1.0),
+            ],
+          ),
+          margin: EdgeInsets.only(
+              left: 20.0, right: 20.0, top: 45.0, bottom: 100.0),
+          height: 130.0,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25.0, left: 20),
+            child: Material(
+              color: Colors.transparent,
+              child: Text(
+                "My Plan",
+                style: TextStyle(
+                    color: Color(0xFF8A9098),
+                    fontSize: 50.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
         ),
       ),
     );

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../pages/home_page.dart';
 import '../services/user_management.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,7 +11,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = new GlobalKey<FormState>();
-
+  bool _loading = false;
   String _email;
   String _password;
 
@@ -20,7 +19,9 @@ class _LoginPageState extends State<LoginPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-
+      setState(() {
+        _loading = true;
+      });
       FirebaseAuth.instance
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((FirebaseUser user) {
@@ -133,20 +134,26 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              child: _buildPageTitleText(context),
+      body: _loading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: _buildPageTitleText(context),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 6,
+                  ),
+                  _buildLoginForm(),
+                ],
+              ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 6,
-            ),
-            _buildLoginForm(),
-          ],
-        ),
-      ),
     );
   }
 }
