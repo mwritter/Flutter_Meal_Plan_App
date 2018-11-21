@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meal_plan/Style.dart';
 import '../services/user_management.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,21 +46,34 @@ class _LoginPageState extends State<LoginPage> {
       padding: EdgeInsets.only(left: 30.0, top: fromTop),
       child: Text(
         "Login",
-        style: TextStyle(
-          fontSize: 90.0,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF356859),
-        ),
+        style: Style().greenHeadingStyle(),
       ),
     );
   }
 
   Widget _buildPasswordTextField() {
     return Container(
+      padding: EdgeInsets.only(top: 5.0, left: 20.0),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: const Color(0x29000000),
+            offset: Offset(0.0, 2.0),
+            blurRadius: 1.0)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
       child: TextFormField(
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
         validator: (value) => value.isEmpty ? 'Password required' : null,
         obscureText: true,
-        decoration: InputDecoration(labelText: 'password'),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          labelText: 'password',
+          labelStyle: TextStyle(
+            fontSize: 15.0,
+            color: Color(0x7F37966F),
+          ),
+        ),
         onSaved: (value) => _password = value,
       ),
     );
@@ -67,7 +81,16 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _buildEmailTextField() {
     return Container(
+      padding: EdgeInsets.only(top: 5.0, left: 20.0),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: const Color(0x29000000),
+            offset: Offset(0.0, 2.0),
+            blurRadius: 1.0)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
       child: TextFormField(
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
         keyboardType: TextInputType.emailAddress,
         validator: (String value) {
           if (value.isEmpty ||
@@ -77,7 +100,13 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
           labelText: 'email',
+          labelStyle: TextStyle(
+            fontSize: 15.0,
+            color: Color(0x7F37966F),
+          ),
         ),
         onSaved: (value) => _email = value,
       ),
@@ -89,7 +118,14 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         validateAndSave();
       },
-      child: Text("login"),
+      child: Text(
+        "login",
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 20.0,
+          color: Color(0xFF37966F),
+        ),
+      ),
     );
   }
 
@@ -98,7 +134,11 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         Navigator.pushNamed(context, '/signup');
       },
-      child: Text("sign up"),
+      child: Text(
+        "sign up",
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
+      ),
     );
   }
 
@@ -141,8 +181,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
             )
           : Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: ListView(
                 children: <Widget>[
                   Container(
                     child: _buildPageTitleText(context),

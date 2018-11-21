@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:meal_plan/Style.dart';
 import 'package:meal_plan/models/user_model.dart';
 import 'package:meal_plan/pages/discover_page.dart';
 import 'package:meal_plan/pages/meal_plan_page.dart';
@@ -100,22 +101,14 @@ class _HomePageState extends State<HomePage> {
             padding: EdgeInsets.fromLTRB(20.0, 40.0, 0.0, 0.0),
             child: Text(
               "Hello",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 90.0,
-                color: Color(0xFF356859),
-              ),
+              style: Style().greenHeadingStyle(),
             ),
           ),
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 115.0, 0.0, 0.0),
             child: Text(
               "There",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 90.0,
-                color: Color(0xFF356859),
-              ),
+              style: Style().greenHeadingStyle(),
             ),
           ),
         ],
@@ -160,12 +153,16 @@ class _HomePageState extends State<HomePage> {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListTile(
-          contentPadding: EdgeInsets.all(20.0),
+          contentPadding: EdgeInsets.only(
+              top: 15.0,
+              left: MediaQuery.of(context).size.width * 0.15,
+              right: MediaQuery.of(context).size.width * 0.15,
+              bottom: 5.0),
           title: Text(
             widget.user.email,
             style: TextStyle(
               color: Color(0xFF8A9098),
-              fontSize: 25.0,
+              fontSize: 15.0,
             ),
           ),
           leading: Container(
@@ -204,7 +201,7 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           margin:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 45.0, bottom: 50.0),
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 25.0, bottom: 10.0),
           height: 130.0,
           child: Padding(
             padding: const EdgeInsets.only(top: 25.0, left: 20),
@@ -212,10 +209,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.transparent,
               child: Text(
                 "My Plan",
-                style: TextStyle(
-                    color: Color(0xFF8A9098),
-                    fontSize: 50.0,
-                    fontWeight: FontWeight.bold),
+                style: Style().greyHeadingStyle(),
               ),
             ),
           ),
@@ -252,10 +246,7 @@ class _HomePageState extends State<HomePage> {
               color: Colors.transparent,
               child: Text(
                 "Discover",
-                style: TextStyle(
-                    color: Color(0xFF8A9098),
-                    fontSize: 50.0,
-                    fontWeight: FontWeight.bold),
+                style: Style().greyHeadingStyle(),
               ),
             ),
           ),

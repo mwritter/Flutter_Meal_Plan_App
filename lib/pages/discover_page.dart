@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:meal_plan/Style.dart';
 import 'package:meal_plan/models/meal.dart';
 import 'package:meal_plan/pages/meal_detail_page.dart';
 
 class DiscoverPage extends StatelessWidget {
   Meal _makeMeal(databaseMeal) {
     return Meal(
+        description: databaseMeal["description"],
         id: databaseMeal.documentID,
         image: databaseMeal["image"],
         ingredients: databaseMeal["ingredients"],
@@ -32,13 +34,29 @@ class DiscoverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Discover Meals"),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          icon: Icon(
+            Icons.arrow_back,
+            color: Color(0xFF8A9098),
+          ),
+          iconSize: 35.0,
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        title: Text(
+          "Discover",
+          style: Style().greyHeadingStyle(),
+        ),
+        centerTitle: true,
       ),
       body: StreamBuilder(
         stream: Firestore.instance.collection('meals').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return CircularProgressIndicator();
+            return Center(child: CircularProgressIndicator());
           }
           return StaggeredGridView.countBuilder(
             crossAxisCount: 4,

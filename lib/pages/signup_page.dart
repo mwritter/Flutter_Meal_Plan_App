@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:meal_plan/Style.dart';
 import '../services/user_management.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -44,21 +45,34 @@ class _SignUpPage extends State<SignUpPage> {
       padding: EdgeInsets.only(left: 30.0, top: fromTop),
       child: Text(
         "Sign up",
-        style: TextStyle(
-          fontSize: 90.0,
-          fontWeight: FontWeight.bold,
-          color: Color(0xFF356859),
-        ),
+        style: Style().greenHeadingStyle(),
       ),
     );
   }
 
   Widget _buildPasswordTextField() {
     return Container(
+      padding: EdgeInsets.only(top: 5.0, left: 20.0),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: const Color(0x29000000),
+            offset: Offset(0.0, 2.0),
+            blurRadius: 1.0)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
       child: TextFormField(
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
         validator: (value) => value.isEmpty ? 'Password required' : null,
         obscureText: true,
-        decoration: InputDecoration(labelText: 'password'),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          labelText: 'password',
+          labelStyle: TextStyle(
+            fontSize: 15.0,
+            color: Color(0x7F37966F),
+          ),
+        ),
         onSaved: (value) => _password = value,
       ),
     );
@@ -66,12 +80,29 @@ class _SignUpPage extends State<SignUpPage> {
 
   Widget _buildConfirmPasswordTextField() {
     return Container(
+      padding: EdgeInsets.only(top: 5.0, left: 20.0),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: const Color(0x29000000),
+            offset: Offset(0.0, 2.0),
+            blurRadius: 1.0)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
       child: TextFormField(
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
         validator: (value) => value.isEmpty && value != _password
             ? 'Confirm Password incorrect'
             : null,
         obscureText: true,
-        decoration: InputDecoration(labelText: 'confirm password'),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          labelText: 'confirm password',
+          labelStyle: TextStyle(
+            fontSize: 15.0,
+            color: Color(0x7F37966F),
+          ),
+        ),
         onSaved: (value) => _confirmPassword = value,
       ),
     );
@@ -79,7 +110,16 @@ class _SignUpPage extends State<SignUpPage> {
 
   Widget _buildEmailTextField() {
     return Container(
+      padding: EdgeInsets.only(top: 5.0, left: 20.0),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[
+        BoxShadow(
+            color: const Color(0x29000000),
+            offset: Offset(0.0, 2.0),
+            blurRadius: 1.0)
+      ], color: Colors.white, borderRadius: BorderRadius.circular(15.0)),
       child: TextFormField(
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
         keyboardType: TextInputType.emailAddress,
         validator: (String value) {
           if (value.isEmpty ||
@@ -89,7 +129,13 @@ class _SignUpPage extends State<SignUpPage> {
           }
         },
         decoration: InputDecoration(
+          border: InputBorder.none,
+          focusedBorder: InputBorder.none,
           labelText: 'email',
+          labelStyle: TextStyle(
+            fontSize: 15.0,
+            color: Color(0x7F37966F),
+          ),
         ),
         onSaved: (value) => _email = value,
       ),
@@ -101,7 +147,11 @@ class _SignUpPage extends State<SignUpPage> {
       onPressed: () {
         validateAndSave();
       },
-      child: Text("sign up"),
+      child: Text(
+        "sign up",
+        style: TextStyle(
+            fontFamily: 'Poppins', fontSize: 20.0, color: Color(0xFF37966F)),
+      ),
     );
   }
 

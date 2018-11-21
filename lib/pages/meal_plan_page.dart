@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meal_plan/Style.dart';
 import '../models/user_model.dart';
 
 class MealPlanPage extends StatelessWidget {
@@ -41,10 +42,7 @@ class MealPlanPage extends StatelessWidget {
                   ),
                   Text(
                     "Meal Plan",
-                    style: TextStyle(
-                        color: Color(0xFF8A9098),
-                        fontSize: 50.0,
-                        fontWeight: FontWeight.bold),
+                    style: Style().greyHeadingStyle(),
                   ),
                   SizedBox(
                     width: deviceWidth,

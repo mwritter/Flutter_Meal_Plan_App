@@ -1,18 +1,34 @@
 import 'package:flutter/material.dart';
 import '../models/meal.dart';
+import '../Style.dart';
 
 class MealDetailPage extends StatelessWidget {
   //get assest images like this: AssetImage('assets/img/${meal.image}')
   final Meal meal;
+  String ingredients = "";
   MealDetailPage(this.meal);
+
+  String makeIngredientsList() {
+    String ingredients = "";
+    for (String s in meal.ingredients) {
+      ingredients += s + "\n";
+    }
+    return ingredients;
+  }
 
   Widget _buildMealImage() {
     return (Hero(
       tag: "MealImage-${meal.image}",
       child: Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0),
-        height: 200.0,
+        height: 300.0,
         decoration: BoxDecoration(
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: const Color(0x29000000),
+                  offset: Offset(0.0, 2.0),
+                  blurRadius: 1.0),
+            ],
             borderRadius: BorderRadius.circular(15.0),
             image: DecorationImage(
                 image: NetworkImage(meal.image), fit: BoxFit.cover)),
@@ -23,9 +39,24 @@ class MealDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: Container(
+          padding: EdgeInsets.all(5.0),
+          decoration: BoxDecoration(
+              color: Color(0xFFEDE2C4),
+              borderRadius: BorderRadius.circular(15.0)),
+          child: FlatButton(
+            onPressed: () {
+              print(meal.id);
+            },
+            child: Text(
+              "Add to Meal Plan",
+              style: Style().greenSubHeadingStyle(),
+            ),
+          ),
+        ),
         backgroundColor: Colors.white,
         body: Padding(
-          padding: const EdgeInsets.only(top: 30.0),
+          padding: const EdgeInsets.only(top: 15.0),
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
@@ -41,10 +72,7 @@ class MealDetailPage extends StatelessWidget {
                 ),
                 title: Text(
                   "Details",
-                  style: TextStyle(
-                    fontSize: 50.0,
-                    color: Color(0xFF8A9098),
-                  ),
+                  style: Style().greyHeadingStyle(),
                 ),
                 actions: <Widget>[
                   Padding(
@@ -71,7 +99,10 @@ class MealDetailPage extends StatelessWidget {
                 delegate: SliverChildListDelegate([
                   _buildMealImage(),
                   Container(
+                    padding: EdgeInsets.only(left: 15.0, right: 15.0),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         Text(
                           "${meal.name}",
@@ -81,9 +112,25 @@ class MealDetailPage extends StatelessWidget {
                         SizedBox(
                           height: 20.0,
                         ),
-                        Text("Description"),
-                        Text("The Best Food Ever"),
-                        Text("${meal.ingredients.toString()}")
+                        Text(
+                          "Description",
+                          style: Style().greenSubHeadingStyle(),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(
+                          "${meal.description}",
+                          style: Style().descriptionTextStyle(),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        Text(
+                          "Ingredients",
+                          style: Style().greenSubHeadingStyle(),
+                        ),
+                        Text(makeIngredientsList())
                       ],
                     ),
                   ),
