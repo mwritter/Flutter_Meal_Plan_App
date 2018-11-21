@@ -13,9 +13,10 @@ class UserManagement {
     Firestore.instance.collection('/users').add({
       'email': user.email,
       'uid': user.uid,
-      'meal_plans': [],
+      'plan': [],
       'image': _defaultUserImage
     }).then((value) {
+      print("made it pass");
       _createLocalUser(user);
       Navigator.of(context).pop();
       Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -26,7 +27,13 @@ class UserManagement {
   }
 
   loginLocalUser(user, context) {
-    _createLocalUser(user);
+    print("THIS IS THE EMAIL " + user.email);
+    currentLocalUser = UserModel(
+        email: user.email,
+        uid: user.uid,
+        image: _defaultUserImage,
+        mealPlan: []);
+
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => HomePage(currentLocalUser)));
   }
@@ -35,7 +42,7 @@ class UserManagement {
     currentLocalUser = UserModel(
         email: user.email,
         uid: user.uid,
-        mealPlan: [],
-        image: _defaultUserImage);
+        image: _defaultUserImage,
+        mealPlan: []);
   }
 }

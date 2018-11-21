@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:meal_plan/models/user_model.dart';
+import 'package:meal_plan/pages/discover_page.dart';
 import 'package:meal_plan/pages/meal_plan_page.dart';
 import '../models/meal.dart';
 import './meal_detail_page.dart';
@@ -9,6 +10,7 @@ import './shopping_list.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel user;
+
   HomePage(this.user);
 
   @override
@@ -19,7 +21,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
-  final List<Widget> _children = [];
+  Map<String, dynamic> plan;
+
   Widget _buildLocalUserInfo() {
     return Column(
       children: <Widget>[
@@ -71,22 +74,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Widget _buildMealDetails() {
-    Meal meal = new Meal("Pizza", "Its so so good", 'food4.jpg');
-    return RaisedButton(
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => MealDetailPage(meal)));
-      },
-      child: Text("Meal Detail Page"),
-    );
-  }
-
   Widget _buildShoppingList() {
     return RaisedButton(
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ShoppingList()));
+            builder: (BuildContext context) => ShoppingList(null)));
       },
       child: Text("Shopping List Page"),
     );
@@ -107,7 +99,7 @@ class _HomePageState extends State<HomePage> {
           Container(
             padding: EdgeInsets.fromLTRB(20.0, 40.0, 0.0, 0.0),
             child: Text(
-              "Hey",
+              "Hello",
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 90.0,
@@ -211,8 +203,8 @@ class _HomePageState extends State<HomePage> {
                   blurRadius: 1.0),
             ],
           ),
-          margin: EdgeInsets.only(
-              left: 20.0, right: 20.0, top: 45.0, bottom: 100.0),
+          margin:
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 45.0, bottom: 50.0),
           height: 130.0,
           child: Padding(
             padding: const EdgeInsets.only(top: 25.0, left: 20),
@@ -220,6 +212,46 @@ class _HomePageState extends State<HomePage> {
               color: Colors.transparent,
               child: Text(
                 "My Plan",
+                style: TextStyle(
+                    color: Color(0xFF8A9098),
+                    fontSize: 50.0,
+                    fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDiscoverContainer() {
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => DiscoverPage()));
+      },
+      child: Hero(
+        tag: "DiscoverContainer",
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: Colors.white,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: const Color(0x29000000),
+                  offset: Offset(0.0, 2.0),
+                  blurRadius: 1.0),
+            ],
+          ),
+          margin:
+              EdgeInsets.only(left: 20.0, right: 20.0, top: 25.0, bottom: 50.0),
+          height: 130.0,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 25.0, left: 20),
+            child: Material(
+              color: Colors.transparent,
+              child: Text(
+                "Discover",
                 style: TextStyle(
                     color: Color(0xFF8A9098),
                     fontSize: 50.0,
@@ -269,10 +301,12 @@ class _HomePageState extends State<HomePage> {
                       child: _buildHeaderTitle(),
                     ),
                     _buildUserContainer(),
-                    _buildMyPlanContainer()
+                    _buildMyPlanContainer(),
+                    _buildDiscoverContainer(),
+                    Center(child: Text(widget.user.mealPlan.toString())),
                   ],
                 ),
               )
-            : ShoppingList());
+            : ShoppingList(null));
   }
 }

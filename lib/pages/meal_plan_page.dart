@@ -19,8 +19,7 @@ class MealPlanPage extends StatelessWidget {
                 blurRadius: 1.0),
           ],
         ),
-        margin:
-            EdgeInsets.only(left: 00.0, right: 0.0, top: 0.0, bottom: 100.0),
+        margin: EdgeInsets.only(left: 00.0, right: 0.0, top: 0.0, bottom: 50.0),
         height: 130.0,
         child: Padding(
           padding: const EdgeInsets.only(top: 25.0, left: 20),
@@ -59,17 +58,66 @@ class MealPlanPage extends StatelessWidget {
     );
   }
 
+  Widget _buildHasMeals() {
+    return Container(
+      child: ListView(
+        children: <Widget>[],
+      ),
+    );
+  }
+
+  Widget _buildMealImageContainer(String image, context) {
+    return Container(
+      width: MediaQuery.of(context).size.width - 30.0,
+      height: 200.0,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          image: DecorationImage(
+              fit: BoxFit.cover, image: AssetImage('assets/img/$image'))),
+    );
+  }
+
+  Widget _buildMealPlanList() {
+    return Container(
+      child: user.mealPlan.length > 0
+          ? ListView.builder(
+              itemCount: user.mealPlan.length,
+              itemBuilder: (context, int index) => Container(
+                    child: Column(
+                      children: <Widget>[
+                        _buildMealImageContainer(
+                            user.mealPlan[index].image, context),
+                        Text(
+                          user.mealPlan[index].name,
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                      ],
+                    ),
+                  ))
+          : Container(
+              child: Center(
+                child: Text("No Meal Plans"),
+              ),
+            ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width / 8;
     return Scaffold(
-      body: Container(
-        child: ListView(
-          children: <Widget>[
-            _buildMyPlanContainer(deviceWidth, context),
-            Text('This is the meal plan array: ${user.mealPlan.toSet()}')
-          ],
-        ),
+      body: Stack(
+        children: <Widget>[
+          Container(child: _buildMyPlanContainer(deviceWidth, context)),
+          Container(
+            padding: EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+            child: _buildMealPlanList(),
+          ),
+        ],
       ),
     );
   }

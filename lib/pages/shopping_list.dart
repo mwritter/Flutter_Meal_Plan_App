@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import '../models/meal.dart';
-import '../models/meal_plan.dart';
 
 class ShoppingList extends StatelessWidget {
-  final MealPlan mp = new MealPlan();
+  final Map<String, dynamic> list;
+
+  ShoppingList(this.list);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       child: ListView.builder(
-        itemCount: mp.meals.length,
+        itemCount: list.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               contentPadding: EdgeInsets.all(10.0),
-              title: Text(mp.meals[index].ingredients.toString()),
+              title: Text(list[index].ingredients.toString()),
             ),
           );
         },

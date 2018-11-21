@@ -1,8 +1,9 @@
 class Meal {
+  final String id;
   final String name;
   final String description;
   final String image;
-  Map<String, dynamic> ingredients = {"Tomato": 1, "Pizza Dough": 1};
+  List<dynamic> ingredients;
 
-  Meal(this.name, this.description, this.image);
+  Meal({this.id, this.name, this.description, this.image, this.ingredients});
 }
