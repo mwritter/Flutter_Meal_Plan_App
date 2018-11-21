@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meal_plan/Style.dart';
+import 'package:meal_plan/services/user_management.dart';
 import '../models/user_model.dart';
 
 class MealPlanPage extends StatelessWidget {
@@ -71,7 +72,7 @@ class MealPlanPage extends StatelessWidget {
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15.0),
           image: DecorationImage(
-              fit: BoxFit.cover, image: AssetImage('assets/img/$image'))),
+              fit: BoxFit.cover, image: NetworkImage('$image'))),
     );
   }
 
@@ -86,6 +87,7 @@ class MealPlanPage extends StatelessWidget {
                         _buildMealImageContainer(
                             user.mealPlan[index].image, context),
                         Text(
+                          // user.mealPlan[index].name,
                           user.mealPlan[index].name,
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold),

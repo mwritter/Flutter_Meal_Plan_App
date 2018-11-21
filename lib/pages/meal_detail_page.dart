@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:meal_plan/models/user_model.dart';
 import '../models/meal.dart';
 import '../Style.dart';
 
 class MealDetailPage extends StatelessWidget {
   //get assest images like this: AssetImage('assets/img/${meal.image}')
   final Meal meal;
+  final UserModel user;
   String ingredients = "";
-  MealDetailPage(this.meal);
+  MealDetailPage(this.meal, this.user);
 
   String makeIngredientsList() {
     String ingredients = "";
@@ -36,6 +40,12 @@ class MealDetailPage extends StatelessWidget {
     ));
   }
 
+  addMeal(UserModel user) {
+    print(meal);
+    print(user.mealPlan.toString());
+    user.mealPlan.add(meal);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,6 +57,7 @@ class MealDetailPage extends StatelessWidget {
           child: FlatButton(
             onPressed: () {
               print(meal.id);
+              addMeal(user);
             },
             child: Text(
               "Add to Meal Plan",

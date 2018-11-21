@@ -5,7 +5,14 @@ class UserModel {
   final String email;
   final String uid;
   final String image;
+  List<String> mealRefs;
   List<Meal> mealPlan;
 
-  UserModel({this.email, this.name, this.image, this.uid, this.mealPlan});
+  UserModel(
+      {this.email,
+      this.name,
+      this.image,
+      this.uid,
+      this.mealRefs,
+      this.mealPlan});
 }

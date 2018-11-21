@@ -8,6 +8,7 @@ import 'package:meal_plan/pages/meal_plan_page.dart';
 import '../models/meal.dart';
 import './meal_detail_page.dart';
 import './shopping_list.dart';
+import '../services/user_management.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel user;
@@ -222,7 +223,7 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DiscoverPage()));
+            builder: (BuildContext context) => DiscoverPage(widget.user)));
       },
       child: Hero(
         tag: "DiscoverContainer",
@@ -294,7 +295,6 @@ class _HomePageState extends State<HomePage> {
                     _buildUserContainer(),
                     _buildMyPlanContainer(),
                     _buildDiscoverContainer(),
-                    Center(child: Text(widget.user.mealPlan.toString())),
                   ],
                 ),
               )

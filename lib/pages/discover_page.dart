@@ -3,9 +3,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:meal_plan/Style.dart';
 import 'package:meal_plan/models/meal.dart';
+import 'package:meal_plan/models/user_model.dart';
 import 'package:meal_plan/pages/meal_detail_page.dart';
 
 class DiscoverPage extends StatelessWidget {
+  UserModel user;
+  DiscoverPage(this.user);
   Meal _makeMeal(databaseMeal) {
     return Meal(
         description: databaseMeal["description"],
@@ -66,7 +69,7 @@ class DiscoverPage extends StatelessWidget {
                     print(snapshot.data.documents[index].documentID);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MealDetailPage(
-                            _makeMeal(snapshot.data.documents[index]))));
+                            _makeMeal(snapshot.data.documents[index]), user)));
                   },
                   child:
                       _buildMealImage(snapshot.data.documents[index]["image"]),

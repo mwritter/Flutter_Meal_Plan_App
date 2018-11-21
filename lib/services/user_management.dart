@@ -32,10 +32,28 @@ class UserManagement {
         email: user.email,
         uid: user.uid,
         image: _defaultUserImage,
+        mealRefs: [],
         mealPlan: []);
-
+    print("Finished creating localUser");
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => HomePage(currentLocalUser)));
+  }
+
+  List<String> getMealPlanRefs(user) {
+    var userQuery = Firestore.instance
+        .collection('users')
+        .where('uid', isEqualTo: user.uid)
+        .limit(1);
+    userQuery.getDocuments().then((data) {
+      if (data.documents.length > 0) {
+        print("GetMealPlanRefs called");
+        return data.documents[0]["plan"];
+        //currentLocalUser.mealRefs.addAll(data.documents[0]["plan"]);
+      } else {
+        return null;
+      }
+    });
+    return null;
   }
 
   _createLocalUser(user) {
@@ -43,6 +61,7 @@ class UserManagement {
         email: user.email,
         uid: user.uid,
         image: _defaultUserImage,
+        mealRefs: [],
         mealPlan: []);
   }
 }
