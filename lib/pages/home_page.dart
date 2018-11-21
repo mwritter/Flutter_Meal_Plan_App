@@ -281,6 +281,16 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  List<String> createShoppingList() {
+    List<String> list = [];
+    for (Meal meal in widget.user.mealPlan) {
+      for (String s in meal.ingredients) {
+        list.add(s);
+      }
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -298,6 +308,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               )
-            : ShoppingList(null));
+            : ShoppingList(createShoppingList()));
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/meal.dart';
 
 class ShoppingList extends StatelessWidget {
-  final Map<String, dynamic> list;
+  final List<String> list;
 
   ShoppingList(this.list);
 
@@ -15,8 +15,8 @@ class ShoppingList extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
-              contentPadding: EdgeInsets.all(10.0),
-              title: Text(list[index].ingredients.toString()),
+              contentPadding: EdgeInsets.all(1.0),
+              title: Text(list[index]),
             ),
           );
         },
