@@ -17,6 +17,8 @@ class ShoppingList extends StatelessWidget {
   }
 
   int getCount(String str) {
+    print(str);
+    print(list);
     int count = 0;
     for (String item in list) {
       if (item == str) {

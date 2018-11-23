@@ -219,43 +219,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildDiscoverContainer() {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DiscoverPage(widget.user)));
-      },
-      child: Hero(
-        tag: "DiscoverContainer",
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            color: Colors.white,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: const Color(0x29000000),
-                  offset: Offset(0.0, 2.0),
-                  blurRadius: 1.0),
-            ],
-          ),
-          margin:
-              EdgeInsets.only(left: 20.0, right: 20.0, top: 25.0, bottom: 50.0),
-          height: 130.0,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 25.0, left: 20),
-            child: Material(
-              color: Colors.transparent,
-              child: Text(
-                "Discover",
-                style: Style().greyHeadingStyle(),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   Widget _buildBottomNav() {
     return BottomNavigationBar(
         fixedColor: Color(0xFF356859),
@@ -304,7 +267,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     _buildUserContainer(),
                     _buildMyPlanContainer(),
-                    _buildDiscoverContainer(),
                   ],
                 ),
               )

@@ -8,7 +8,8 @@ import 'package:meal_plan/pages/meal_detail_page.dart';
 
 class DiscoverPage extends StatelessWidget {
   UserModel user;
-  DiscoverPage(this.user);
+  Function addMeal;
+  DiscoverPage(this.user, this.addMeal);
   Meal _makeMeal(databaseMeal) {
     return Meal(
         description: databaseMeal["description"],
@@ -69,7 +70,9 @@ class DiscoverPage extends StatelessWidget {
                     print(snapshot.data.documents[index].documentID);
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MealDetailPage(
-                            _makeMeal(snapshot.data.documents[index]), user)));
+                            _makeMeal(snapshot.data.documents[index]),
+                            user,
+                            addMeal)));
                   },
                   child:
                       _buildMealImage(snapshot.data.documents[index]["image"]),

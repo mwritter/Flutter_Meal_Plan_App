@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:meal_plan/models/user_model.dart';
+import 'package:meal_plan/services/user_management.dart';
 import '../models/meal.dart';
 import '../Style.dart';
 
@@ -9,8 +10,9 @@ class MealDetailPage extends StatelessWidget {
   //get assest images like this: AssetImage('assets/img/${meal.image}')
   final Meal meal;
   final UserModel user;
+  Function addMeal;
   String ingredients = "";
-  MealDetailPage(this.meal, this.user);
+  MealDetailPage(this.meal, this.user, this.addMeal);
 
   String makeIngredientsList() {
     String ingredients = "";
@@ -40,31 +42,24 @@ class MealDetailPage extends StatelessWidget {
     ));
   }
 
-  addMeal(UserModel user) {
-    print(meal);
-    print(user.mealPlan.toString());
-    user.mealPlan.add(meal);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: Container(
-          padding: EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-              color: Color(0xFFEDE2C4),
-              borderRadius: BorderRadius.circular(15.0)),
-          child: FlatButton(
-            onPressed: () {
-              print(meal.id);
-              addMeal(user);
-            },
-            child: Text(
-              "Add to Meal Plan",
-              style: Style().greenSubHeadingStyle(),
-            ),
-          ),
-        ),
+            padding: EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+                color: Color(0xFFEDE2C4),
+                borderRadius: BorderRadius.circular(15.0)),
+            child: FlatButton(
+              onPressed: () {
+                print(meal.id);
+                addMeal(meal.id);
+              },
+              child: Text(
+                "Add to Meal Plan",
+                style: Style().greenSubHeadingStyle(),
+              ),
+            )),
         backgroundColor: Colors.white,
         body: Padding(
           padding: const EdgeInsets.only(top: 15.0),
