@@ -26,6 +26,8 @@ class UserManagement {
     });
   }
 
+  getCurrentMealPlan(UserModel user) async {}
+
   loginLocalUser(user, context) {
     print("THIS IS THE EMAIL " + user.email);
     currentLocalUser = UserModel(
@@ -34,6 +36,7 @@ class UserManagement {
         image: _defaultUserImage,
         mealRefs: [],
         mealPlan: []);
+
     print("Finished creating localUser");
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (BuildContext context) => HomePage(currentLocalUser)));

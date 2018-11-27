@@ -12,7 +12,8 @@ class MealDetailPage extends StatelessWidget {
   final UserModel user;
   Function addMeal;
   String ingredients = "";
-  MealDetailPage(this.meal, this.user, this.addMeal);
+  bool adding = true;
+  MealDetailPage([this.meal, this.user, this.adding, this.addMeal]);
 
   String makeIngredientsList() {
     String ingredients = "";
@@ -52,13 +53,19 @@ class MealDetailPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(15.0)),
             child: FlatButton(
               onPressed: () {
-                print(meal.id);
-                addMeal(meal.id);
+                if (adding) {
+                  user.mealPlan.add(meal);
+                  addMeal(meal.id);
+                } else {
+                  Navigator.pop(context);
+                }
               },
-              child: Text(
-                "Add to Meal Plan",
-                style: Style().greenSubHeadingStyle(),
-              ),
+              child: adding
+                  ? Text(
+                      "Add to Meal Plan",
+                      style: Style().greenSubHeadingStyle(),
+                    )
+                  : Text("BACK"),
             )),
         backgroundColor: Colors.white,
         body: Padding(

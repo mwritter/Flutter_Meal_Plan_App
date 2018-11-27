@@ -72,6 +72,7 @@ class DiscoverPage extends StatelessWidget {
                         builder: (context) => MealDetailPage(
                             _makeMeal(snapshot.data.documents[index]),
                             user,
+                            true,
                             addMeal)));
                   },
                   child:

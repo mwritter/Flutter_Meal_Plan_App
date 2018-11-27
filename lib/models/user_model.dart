@@ -5,12 +5,12 @@ class UserModel {
   final String email;
   final String uid;
   final String image;
-  List<String> mealRefs;
+  List<dynamic> mealRefs;
   List<Meal> mealPlan;
 
   UserModel(
       {this.email,
-      this.name,
+      this.name = "",
       this.image,
       this.uid,
       this.mealRefs,

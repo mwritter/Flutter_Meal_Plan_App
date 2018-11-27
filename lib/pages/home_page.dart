@@ -267,6 +267,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     _buildUserContainer(),
                     _buildMyPlanContainer(),
+                    //Text(widget.user.mealRefs.toList().toString()),
                   ],
                 ),
               )

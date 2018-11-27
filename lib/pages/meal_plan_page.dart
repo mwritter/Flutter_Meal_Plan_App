@@ -1,14 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:meal_plan/Style.dart';
+import 'package:meal_plan/models/meal.dart';
 import 'package:meal_plan/pages/discover_page.dart';
+import 'package:meal_plan/pages/meal_detail_page.dart';
 import 'package:meal_plan/services/user_management.dart';
 import '../models/user_model.dart';
 
-class MealPlanPage extends StatelessWidget {
+class MealPlanPage extends StatefulWidget {
+  List list;
   DocumentSnapshot databaseDocument;
   final UserModel user;
+
   MealPlanPage(this.user);
+
+  @override
+  State<StatefulWidget> createState() {
+    return _MealPlanPageState();
+  }
+}
+
+class _MealPlanPageState extends State<MealPlanPage> {
+  bool first = true;
 
   Widget _buildMyPlanContainer(double deviceWidth, BuildContext context) {
     return Hero(
@@ -81,17 +94,17 @@ class MealPlanPage extends StatelessWidget {
 
   Widget _buildMealPlanList() {
     return Container(
-      child: user.mealPlan.length > 0
+      child: widget.user.mealPlan.length > 0
           ? ListView.builder(
-              itemCount: user.mealPlan.length,
+              itemCount: widget.user.mealPlan.length,
               itemBuilder: (context, int index) => Container(
                     child: Column(
                       children: <Widget>[
                         _buildMealImageContainer(
-                            user.mealPlan[index].image, context),
+                            widget.user.mealPlan[index].image, context),
                         Text(
                           // user.mealPlan[index].name,
-                          user.mealPlan[index].name,
+                          widget.user.mealPlan[index].name,
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold),
                         ),
@@ -110,42 +123,140 @@ class MealPlanPage extends StatelessWidget {
   }
 
   _addToPlan(String mealId) {
-    List list = databaseDocument['plan'].toList();
-    list.add(mealId);
+    widget.list = widget.databaseDocument['plan'].toList();
+    widget.list.add(mealId);
     Firestore.instance.runTransaction((transaction) async {
       DocumentSnapshot freshSnap =
-          await transaction.get(databaseDocument.reference);
-      await transaction.update(freshSnap.reference, {'plan': []..addAll(list)});
+          await transaction.get(widget.databaseDocument.reference);
+      await transaction
+          .update(freshSnap.reference, {'plan': []..addAll(widget.list)});
     });
   }
 
-  Widget _buildListItem(context, DocumentSnapshot document, int index) {
+  Widget _buildEmptyCard() {
+    return Container(
+      padding: EdgeInsets.all(15.0),
+      child: Column(
+        children: <Widget>[
+          Container(
+            height: 300.0,
+            decoration: BoxDecoration(
+              color: Colors.grey,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: const Color(0x29000000),
+                    offset: Offset(0.0, 2.0),
+                    blurRadius: 1.0),
+              ],
+              borderRadius: BorderRadius.circular(15.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMealCard(int index) {
     return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => MealDetailPage(
+                widget.user.mealPlan[index], widget.user, false)));
+      },
       child: Container(
-        height: 200.0,
-        width: double.infinity,
-        color: Colors.green,
-        child: Center(
-          child: Text(document['plan'][index]),
+        padding: EdgeInsets.all(15.0),
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: 300.0,
+              decoration: BoxDecoration(
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: const Color(0x29000000),
+                        offset: Offset(0.0, 3.0),
+                        blurRadius: 3.0),
+                  ],
+                  borderRadius: BorderRadius.circular(15.0),
+                  image: DecorationImage(
+                      image: NetworkImage(widget.user.mealPlan[index].image),
+                      fit: BoxFit.cover)),
+            ),
+            Text(widget.user.mealPlan[index].name),
+          ],
         ),
       ),
     );
+  }
+
+  Widget _buildListItem(context, int index) {
+    CollectionReference meals = Firestore.instance.collection('meals');
+    if (widget.user.mealPlan.length == 0) {
+      print("# of Meal Plans: ${widget.user.mealPlan.length}");
+      DocumentReference documentRef =
+          meals.document(widget.user.mealRefs[index]);
+      documentRef.get().then((DocumentSnapshot docSnap) {
+        //print('${docSnap.data['name']}');
+        if (docSnap.exists) {
+          setState(() {
+            print("setting state");
+            widget.user.mealPlan.add(new Meal(
+              image: docSnap.data['image'],
+              name: docSnap.data['name'],
+              ingredients: docSnap.data['ingredients'],
+              description: docSnap.data['description'],
+            ));
+          });
+        } else {
+          print("no snapshot");
+        }
+      });
+    }
+
+    return widget.user.mealPlan.length > 0
+        ? _buildMealCard(index)
+        : Container();
+  }
+
+  void _getCurrentPlanMeals() {
+    //UserManagement().getCurrentMealPlan(widget.user);
+    print(widget.user.mealPlan.length);
+    CollectionReference meals = Firestore.instance.collection('meals');
+    if (widget.user.mealPlan.length == 0) {
+      print(widget.user.mealPlan.length);
+      for (String mealId in widget.user.mealRefs) {
+        DocumentReference documentRef = meals.document(mealId);
+
+        documentRef.get().then((DocumentSnapshot docSnap) {
+          if (docSnap.exists) {
+            widget.user.mealPlan.add(new Meal(
+              image: docSnap.data['image'],
+              name: docSnap.data['name'],
+              ingredients: docSnap.data['ingredients'],
+              description: docSnap.data['description'],
+            ));
+          } else {
+            print("no snapshot");
+          }
+        });
+      }
+    }
   }
 
   Widget _buildMealPlanListStream() {
     return StreamBuilder(
       stream: Firestore.instance
           .collection('users')
-          .where('uid', isEqualTo: user.uid)
+          .where('uid', isEqualTo: widget.user.uid)
           .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return const Text("Loading");
-        databaseDocument = snapshot.data.documents[0];
+        widget.databaseDocument = snapshot.data.documents[0];
+        widget.user.mealRefs = widget.databaseDocument['plan'];
+
         return Container(
           child: ListView.builder(
             itemCount: snapshot.data.documents[0]['plan'].length,
-            itemBuilder: (context, index) =>
-                _buildListItem(context, snapshot.data.documents[0], index),
+            itemBuilder: (context, index) => _buildListItem(context, index),
           ),
         );
       },
@@ -156,31 +267,36 @@ class MealPlanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width / 8;
     return Scaffold(
-      floatingActionButton: Container(
-          padding: EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-              color: Color(0xFFEDE2C4),
-              borderRadius: BorderRadius.circular(15.0)),
-          child: FlatButton(
-            onPressed: () {
-              print("Pressed Search");
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => DiscoverPage(user, _addToPlan)));
-            },
-            child: Text(
-              "Search for Meal",
-              style: Style().greenSubHeadingStyle(),
+        floatingActionButton: Container(
+            padding: EdgeInsets.all(5.0),
+            decoration: BoxDecoration(
+                color: Color(0xFFEDE2C4),
+                borderRadius: BorderRadius.circular(15.0)),
+            child: FlatButton(
+              onPressed: () {
+                print("Pressed Search");
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        DiscoverPage(widget.user, _addToPlan)));
+              },
+              child: Text(
+                "Search for Meal",
+                style: Style().greenSubHeadingStyle(),
+              ),
+            )),
+        body: Stack(
+          children: <Widget>[
+            Container(child: _buildMyPlanContainer(deviceWidth, context)),
+            Container(
+              padding: EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
+              child: _buildMealPlanListStream(),
             ),
-          )),
-      body: Stack(
-        children: <Widget>[
-          Container(child: _buildMyPlanContainer(deviceWidth, context)),
-          Container(
-            padding: EdgeInsets.fromLTRB(0.0, 150.0, 0.0, 0.0),
-            child: _buildMealPlanListStream(),
-          ),
-        ],
-      ),
-    );
+          ],
+        ));
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 }
