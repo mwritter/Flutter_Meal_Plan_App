@@ -152,7 +152,6 @@ class _MealPlanPageState extends State<MealPlanPage> {
   }
 
   Widget _buildMealCard(int index) {
-    String key = "$index";
     return Dismissible(
       key: ObjectKey(widget.user.mealPlan[index]),
       onDismissed: (direction) {
