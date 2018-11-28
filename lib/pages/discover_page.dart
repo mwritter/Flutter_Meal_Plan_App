@@ -19,6 +19,56 @@ class DiscoverPage extends StatelessWidget {
         name: databaseMeal["name"]);
   }
 
+  Widget _buildMyDiscoverContainer(double deviceWidth, BuildContext context) {
+    return Hero(
+      tag: "MyDiscoverContainer",
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15.0),
+          color: Colors.white,
+          boxShadow: <BoxShadow>[
+            BoxShadow(
+                color: const Color(0x29000000),
+                offset: Offset(0.0, 2.0),
+                blurRadius: 1.0),
+          ],
+        ),
+        margin: EdgeInsets.only(left: 00.0, right: 0.0, top: 0.0, bottom: 40.0),
+        height: 130.0,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 25.0, left: 20),
+          child: Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  IconButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Color(0xFF8A9098),
+                      size: 35.0,
+                    ),
+                  ),
+                  Text(
+                    "Discover",
+                    style: Style().greyHeadingStyle(),
+                  ),
+                  SizedBox(
+                    width: deviceWidth,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildMealImage(image, index) {
     return Hero(
       tag: "MealImage-$image$index",
@@ -36,56 +86,45 @@ class DiscoverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double deviceWidth = MediaQuery.of(context).size.width / 8;
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        backgroundColor: Colors.white,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: Color(0xFF8A9098),
+        body: Stack(
+      children: <Widget>[
+        _buildMyDiscoverContainer(deviceWidth, context),
+        Container(
+          padding: EdgeInsets.fromLTRB(0.0, 130.0, 0.0, 0.0),
+          child: StreamBuilder(
+            stream: Firestore.instance.collection('meals').snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              }
+              return StaggeredGridView.countBuilder(
+                crossAxisCount: 4,
+                itemCount: snapshot.data.documents.length,
+                itemBuilder: (context, index) => GestureDetector(
+                      onTap: () {
+                        print(snapshot.data.documents[index].documentID);
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MealDetailPage(
+                                _makeMeal(snapshot.data.documents[index]),
+                                index,
+                                user,
+                                true,
+                                addMeal)));
+                      },
+                      child: _buildMealImage(
+                          snapshot.data.documents[index]["image"], index),
+                    ),
+                staggeredTileBuilder: (index) =>
+                    StaggeredTile.count(2, index.isEven ? 3 : 2),
+                mainAxisSpacing: 1.0,
+                crossAxisSpacing: 1.0,
+              );
+            },
           ),
-          iconSize: 35.0,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
         ),
-        title: Text(
-          "Discover",
-          style: Style().greyHeadingStyle(),
-        ),
-        centerTitle: true,
-      ),
-      body: StreamBuilder(
-        stream: Firestore.instance.collection('meals').snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
-          }
-          return StaggeredGridView.countBuilder(
-            crossAxisCount: 4,
-            itemCount: snapshot.data.documents.length,
-            itemBuilder: (context, index) => GestureDetector(
-                  onTap: () {
-                    print(snapshot.data.documents[index].documentID);
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => MealDetailPage(
-                            _makeMeal(snapshot.data.documents[index]),
-                            index,
-                            user,
-                            true,
-                            addMeal)));
-                  },
-                  child: _buildMealImage(
-                      snapshot.data.documents[index]["image"], index),
-                ),
-            staggeredTileBuilder: (index) =>
-                StaggeredTile.count(2, index.isEven ? 3 : 2),
-            mainAxisSpacing: 1.0,
-            crossAxisSpacing: 1.0,
-          );
-        },
-      ),
-    );
+      ],
+    ));
   }
 }

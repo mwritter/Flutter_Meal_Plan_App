@@ -154,7 +154,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
   Widget _buildMealCard(int index) {
     String key = "$index";
     return Dismissible(
-      key: Key(key),
+      key: ObjectKey(widget.user.mealPlan[index]),
       onDismissed: (direction) {
         setState(() {
           widget.user.mealPlan.removeAt(index);
@@ -271,7 +271,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                         DiscoverPage(widget.user, _addToPlan)));
               },
               child: Text(
-                "Search for Meal ${widget.user.mealPlan.length}",
+                "Search for Meal",
                 style: Style().greenSubHeadingStyle(),
               ),
             )),

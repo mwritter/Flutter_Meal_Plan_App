@@ -52,22 +52,25 @@ class MealDetailPage extends StatelessWidget {
             decoration: BoxDecoration(
                 color: Color(0xFFEDE2C4),
                 borderRadius: BorderRadius.circular(15.0)),
-            child: FlatButton(
-              onPressed: () {
-                if (adding) {
-                  user.mealPlan.add(meal);
-                  addMeal(meal.id);
-                  Navigator.pop(context);
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-              child: adding
-                  ? Text(
-                      "Add to Meal Plan",
-                      style: Style().greenSubHeadingStyle(),
-                    )
-                  : Text("BACK"),
+            child: Hero(
+              tag: "action-button",
+              child: FlatButton(
+                onPressed: () {
+                  if (adding) {
+                    user.mealPlan.add(meal);
+                    addMeal(meal.id);
+                    Navigator.pop(context);
+                  } else {
+                    Navigator.pop(context);
+                  }
+                },
+                child: adding
+                    ? Text(
+                        "Add to Meal Plan",
+                        style: Style().greenSubHeadingStyle(),
+                      )
+                    : Text("BACK"),
+              ),
             )),
         backgroundColor: Colors.white,
         body: Padding(
