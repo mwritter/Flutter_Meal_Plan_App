@@ -13,7 +13,8 @@ class MealDetailPage extends StatelessWidget {
   Function addMeal;
   String ingredients = "";
   bool adding = true;
-  MealDetailPage([this.meal, this.user, this.adding, this.addMeal]);
+  final int index;
+  MealDetailPage([this.meal, this.index, this.user, this.adding, this.addMeal]);
 
   String makeIngredientsList() {
     String ingredients = "";
@@ -25,7 +26,7 @@ class MealDetailPage extends StatelessWidget {
 
   Widget _buildMealImage() {
     return (Hero(
-      tag: "MealImage-${meal.image}",
+      tag: "MealImage-${meal.image}$index",
       child: Container(
         margin: EdgeInsets.only(left: 10.0, right: 10.0),
         height: 300.0,
@@ -56,6 +57,7 @@ class MealDetailPage extends StatelessWidget {
                 if (adding) {
                   user.mealPlan.add(meal);
                   addMeal(meal.id);
+                  Navigator.pop(context);
                 } else {
                   Navigator.pop(context);
                 }

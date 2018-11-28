@@ -21,7 +21,7 @@ class MealPlanPage extends StatefulWidget {
 }
 
 class _MealPlanPageState extends State<MealPlanPage> {
-  bool first = true;
+  bool loading = false;
 
   Widget _buildMyPlanContainer(double deviceWidth, BuildContext context) {
     return Hero(
@@ -133,69 +133,80 @@ class _MealPlanPageState extends State<MealPlanPage> {
     });
   }
 
-  Widget _buildEmptyCard() {
-    return Container(
-      padding: EdgeInsets.all(15.0),
-      child: Column(
-        children: <Widget>[
-          Container(
-            height: 300.0,
-            decoration: BoxDecoration(
-              color: Colors.grey,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: const Color(0x29000000),
-                    offset: Offset(0.0, 2.0),
-                    blurRadius: 1.0),
-              ],
-              borderRadius: BorderRadius.circular(15.0),
-            ),
-          ),
-        ],
-      ),
-    );
+  _deleteFromPlan(int index) {
+    print(index);
+
+    widget.list = widget.databaseDocument['plan'].toList();
+    //print("Removing from widget.list");
+    widget.list.removeAt(index);
+
+    print("Local MealRefs: ${widget.user.mealRefs.toString()}");
+    print("Local user mealPlan length: ${widget.user.mealPlan.length}");
+    print("widget.list is: " + widget.list.toString());
+
+    Firestore.instance.runTransaction((transaction) async {
+      DocumentSnapshot freshSnap =
+          await transaction.get(widget.databaseDocument.reference);
+      await transaction.update(freshSnap.reference, {'plan': widget.list});
+    });
   }
 
   Widget _buildMealCard(int index) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MealDetailPage(
-                widget.user.mealPlan[index], widget.user, false)));
+    String key = "$index";
+    return Dismissible(
+      key: Key(key),
+      onDismissed: (direction) {
+        setState(() {
+          widget.user.mealPlan.removeAt(index);
+
+          _deleteFromPlan(index);
+          widget.user.mealRefs.removeAt(index);
+        });
       },
-      child: Container(
-        padding: EdgeInsets.all(15.0),
-        child: Column(
-          children: <Widget>[
-            Container(
-              height: 300.0,
-              decoration: BoxDecoration(
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: const Color(0x29000000),
-                        offset: Offset(0.0, 3.0),
-                        blurRadius: 3.0),
-                  ],
-                  borderRadius: BorderRadius.circular(15.0),
-                  image: DecorationImage(
-                      image: NetworkImage(widget.user.mealPlan[index].image),
-                      fit: BoxFit.cover)),
+      background: Container(color: Colors.grey),
+      child: GestureDetector(
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => MealDetailPage(
+                    widget.user.mealPlan[index], index, widget.user, false)));
+          },
+          child: Container(
+            padding: EdgeInsets.all(15.0),
+            child: Column(
+              children: <Widget>[
+                Hero(
+                    tag: "MealImage-${widget.user.mealPlan[index].image}$index",
+                    child: Container(
+                      margin: EdgeInsets.only(left: 10.0, right: 10.0),
+                      height: 300.0,
+                      decoration: BoxDecoration(
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                                color: const Color(0x29000000),
+                                offset: Offset(0.0, 2.0),
+                                blurRadius: 1.0),
+                          ],
+                          borderRadius: BorderRadius.circular(15.0),
+                          image: DecorationImage(
+                              image: NetworkImage(
+                                  widget.user.mealPlan[index].image),
+                              fit: BoxFit.cover)),
+                    )),
+                Text(widget.user.mealPlan[index].name),
+              ],
             ),
-            Text(widget.user.mealPlan[index].name),
-          ],
-        ),
-      ),
+          )),
     );
   }
 
   Widget _buildListItem(context, int index) {
     CollectionReference meals = Firestore.instance.collection('meals');
-    if (widget.user.mealPlan.length == 0) {
+    if (widget.user.mealPlan.length < widget.user.mealRefs.length) {
       print("# of Meal Plans: ${widget.user.mealPlan.length}");
+      print("# of Meal Refs: ${widget.user.mealRefs.length}");
       DocumentReference documentRef =
           meals.document(widget.user.mealRefs[index]);
       documentRef.get().then((DocumentSnapshot docSnap) {
-        //print('${docSnap.data['name']}');
         if (docSnap.exists) {
           setState(() {
             print("setting state");
@@ -211,35 +222,15 @@ class _MealPlanPageState extends State<MealPlanPage> {
         }
       });
     }
+    if (widget.list != null &&
+        widget.user.mealRefs.length > widget.list.length) {
+      print("${widget.user.mealPlan.length}");
+      print("${widget.user.mealRefs.length}");
+    }
 
     return widget.user.mealPlan.length > 0
         ? _buildMealCard(index)
         : Container();
-  }
-
-  void _getCurrentPlanMeals() {
-    //UserManagement().getCurrentMealPlan(widget.user);
-    print(widget.user.mealPlan.length);
-    CollectionReference meals = Firestore.instance.collection('meals');
-    if (widget.user.mealPlan.length == 0) {
-      print(widget.user.mealPlan.length);
-      for (String mealId in widget.user.mealRefs) {
-        DocumentReference documentRef = meals.document(mealId);
-
-        documentRef.get().then((DocumentSnapshot docSnap) {
-          if (docSnap.exists) {
-            widget.user.mealPlan.add(new Meal(
-              image: docSnap.data['image'],
-              name: docSnap.data['name'],
-              ingredients: docSnap.data['ingredients'],
-              description: docSnap.data['description'],
-            ));
-          } else {
-            print("no snapshot");
-          }
-        });
-      }
-    }
   }
 
   Widget _buildMealPlanListStream() {
@@ -280,7 +271,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                         DiscoverPage(widget.user, _addToPlan)));
               },
               child: Text(
-                "Search for Meal",
+                "Search for Meal ${widget.user.mealPlan.length}",
                 style: Style().greenSubHeadingStyle(),
               ),
             )),
@@ -293,10 +284,5 @@ class _MealPlanPageState extends State<MealPlanPage> {
             ),
           ],
         ));
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 }

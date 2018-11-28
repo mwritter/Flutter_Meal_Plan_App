@@ -19,9 +19,9 @@ class DiscoverPage extends StatelessWidget {
         name: databaseMeal["name"]);
   }
 
-  Widget _buildMealImage(image) {
+  Widget _buildMealImage(image, index) {
     return Hero(
-      tag: "MealImage-$image",
+      tag: "MealImage-$image$index",
       child: Container(
         margin: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
         height: 100.0,
@@ -71,12 +71,13 @@ class DiscoverPage extends StatelessWidget {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => MealDetailPage(
                             _makeMeal(snapshot.data.documents[index]),
+                            index,
                             user,
                             true,
                             addMeal)));
                   },
-                  child:
-                      _buildMealImage(snapshot.data.documents[index]["image"]),
+                  child: _buildMealImage(
+                      snapshot.data.documents[index]["image"], index),
                 ),
             staggeredTileBuilder: (index) =>
                 StaggeredTile.count(2, index.isEven ? 3 : 2),
