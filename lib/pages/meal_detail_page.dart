@@ -57,8 +57,8 @@ class MealDetailPage extends StatelessWidget {
               child: FlatButton(
                 onPressed: () {
                   if (adding) {
-                    user.mealPlan.add(meal);
                     addMeal(meal.id);
+                    user.mealPlan.add(meal);
                     Navigator.pop(context);
                   } else {
                     Navigator.pop(context);

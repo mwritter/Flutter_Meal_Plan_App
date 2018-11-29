@@ -127,6 +127,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
       onDismissed: (direction) {
         setState(() {
           widget.user.mealPlan.removeAt(index);
+
           _deleteFromPlan(index);
           widget.user.mealRefs.removeAt(index);
         });
@@ -169,6 +170,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
 
   Widget _buildListItem(context, String id, index) {
     List<Meal> newMealPlan = new List<Meal>();
+
     if (widget.user.mealRefs.length > widget.user.mealPlan.length) {
       CollectionReference meals = Firestore.instance.collection('meals');
       DocumentReference documentRef =
@@ -250,7 +252,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                         DiscoverPage(widget.user, _addToPlan)));
               },
               child: Text(
-                "Search for Meal ${widget.user.mealPlan.length}",
+                "Search for Meal",
                 style: Style().greenSubHeadingStyle(),
               ),
             )),

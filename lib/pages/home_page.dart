@@ -245,11 +245,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<String> createShoppingList() {
-    List<String> list = [];
-    for (Meal meal in widget.user.mealPlan) {
-      for (String s in meal.ingredients) {
-        list.add(s);
-      }
+    List<dynamic> list = [];
+    for (int i = 0; i < widget.user.mealPlan.length; i++) {
+      list.addAll(widget.user.mealPlan[i].ingredients);
     }
     return list;
   }
@@ -271,6 +269,6 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               )
-            : ShoppingList(createShoppingList()));
+            : ShoppingList(widget.user));
   }
 }
