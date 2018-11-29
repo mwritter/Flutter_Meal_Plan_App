@@ -8,7 +8,6 @@ import 'package:meal_plan/services/user_management.dart';
 import '../models/user_model.dart';
 
 class MealPlanPage extends StatefulWidget {
-  List list;
   DocumentSnapshot databaseDocument;
   final UserModel user;
 
@@ -22,6 +21,7 @@ class MealPlanPage extends StatefulWidget {
 
 class _MealPlanPageState extends State<MealPlanPage> {
   bool loading = false;
+  List list;
 
   Widget _buildMyPlanContainer(double deviceWidth, BuildContext context) {
     return Hero(
@@ -92,62 +92,32 @@ class _MealPlanPageState extends State<MealPlanPage> {
     );
   }
 
-  Widget _buildMealPlanList() {
-    return Container(
-      child: widget.user.mealPlan.length > 0
-          ? ListView.builder(
-              itemCount: widget.user.mealPlan.length,
-              itemBuilder: (context, int index) => Container(
-                    child: Column(
-                      children: <Widget>[
-                        _buildMealImageContainer(
-                            widget.user.mealPlan[index].image, context),
-                        Text(
-                          // user.mealPlan[index].name,
-                          widget.user.mealPlan[index].name,
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 30.0,
-                        ),
-                      ],
-                    ),
-                  ))
-          : Container(
-              child: Center(
-                child: Text("No Meal Plans"),
-              ),
-            ),
-    );
-  }
-
   _addToPlan(String mealId) {
-    widget.list = widget.databaseDocument['plan'].toList();
-    widget.list.add(mealId);
+    list = widget.databaseDocument['plan'].toList();
+    list.add(mealId);
     Firestore.instance.runTransaction((transaction) async {
       DocumentSnapshot freshSnap =
           await transaction.get(widget.databaseDocument.reference);
-      await transaction
-          .update(freshSnap.reference, {'plan': []..addAll(widget.list)});
+      await transaction.update(freshSnap.reference, {'plan': []..addAll(list)});
     });
   }
 
   _deleteFromPlan(int index) {
     print(index);
 
-    widget.list = widget.databaseDocument['plan'].toList();
+    list = widget.databaseDocument['plan'].toList();
     //print("Removing from widget.list");
-    widget.list.removeAt(index);
+
+    list.removeAt(index);
 
     print("Local MealRefs: ${widget.user.mealRefs.toString()}");
     print("Local user mealPlan length: ${widget.user.mealPlan.length}");
-    print("widget.list is: " + widget.list.toString());
+    print("widget.list is: " + list.toString());
 
     Firestore.instance.runTransaction((transaction) async {
       DocumentSnapshot freshSnap =
           await transaction.get(widget.databaseDocument.reference);
-      await transaction.update(freshSnap.reference, {'plan': widget.list});
+      await transaction.update(freshSnap.reference, {'plan': list});
     });
   }
 
@@ -157,7 +127,6 @@ class _MealPlanPageState extends State<MealPlanPage> {
       onDismissed: (direction) {
         setState(() {
           widget.user.mealPlan.removeAt(index);
-
           _deleteFromPlan(index);
           widget.user.mealRefs.removeAt(index);
         });
@@ -198,33 +167,28 @@ class _MealPlanPageState extends State<MealPlanPage> {
     );
   }
 
-  Widget _buildListItem(context, int index) {
-    CollectionReference meals = Firestore.instance.collection('meals');
-    if (widget.user.mealPlan.length < widget.user.mealRefs.length) {
-      print("# of Meal Plans: ${widget.user.mealPlan.length}");
-      print("# of Meal Refs: ${widget.user.mealRefs.length}");
+  Widget _buildListItem(context, String id, index) {
+    List<Meal> newMealPlan = new List<Meal>();
+    if (widget.user.mealRefs.length > widget.user.mealPlan.length) {
+      CollectionReference meals = Firestore.instance.collection('meals');
       DocumentReference documentRef =
           meals.document(widget.user.mealRefs[index]);
       documentRef.get().then((DocumentSnapshot docSnap) {
         if (docSnap.exists) {
+          print("setting state");
+          newMealPlan.add(new Meal(
+            image: docSnap.data['image'],
+            name: docSnap.data['name'],
+            ingredients: docSnap.data['ingredients'],
+            description: docSnap.data['description'],
+          ));
           setState(() {
-            print("setting state");
-            widget.user.mealPlan.add(new Meal(
-              image: docSnap.data['image'],
-              name: docSnap.data['name'],
-              ingredients: docSnap.data['ingredients'],
-              description: docSnap.data['description'],
-            ));
+            widget.user.mealPlan.addAll(newMealPlan);
           });
         } else {
           print("no snapshot");
         }
       });
-    }
-    if (widget.list != null &&
-        widget.user.mealRefs.length > widget.list.length) {
-      print("${widget.user.mealPlan.length}");
-      print("${widget.user.mealRefs.length}");
     }
 
     return widget.user.mealPlan.length > 0
@@ -246,15 +210,31 @@ class _MealPlanPageState extends State<MealPlanPage> {
         return Container(
           child: ListView.builder(
             itemCount: snapshot.data.documents[0]['plan'].length,
-            itemBuilder: (context, index) => _buildListItem(context, index),
+            itemBuilder: (context, index) => _buildListItem(
+                context, snapshot.data.documents[0]['plan'][index], index),
           ),
         );
       },
     );
   }
 
+  void printInfo() {
+    String localPlan = widget.user.mealPlan.length.toString();
+    print("Total localPlan $localPlan");
+    for (int i = 0; i < widget.user.mealPlan.length; i++) {
+      print("$i " + widget.user.mealPlan[i].name);
+    }
+
+    String refs = widget.user.mealRefs.length.toString();
+    print("Total refs: $refs");
+    for (int i = 0; i < widget.user.mealRefs.length; i++) {
+      print("$i " + widget.user.mealRefs[i]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    printInfo();
     double deviceWidth = MediaQuery.of(context).size.width / 8;
     return Scaffold(
         floatingActionButton: Container(
@@ -270,7 +250,7 @@ class _MealPlanPageState extends State<MealPlanPage> {
                         DiscoverPage(widget.user, _addToPlan)));
               },
               child: Text(
-                "Search for Meal",
+                "Search for Meal ${widget.user.mealPlan.length}",
                 style: Style().greenSubHeadingStyle(),
               ),
             )),

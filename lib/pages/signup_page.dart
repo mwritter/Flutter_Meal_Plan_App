@@ -12,7 +12,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPage extends State<SignUpPage> {
   final formKey = new GlobalKey<FormState>();
-
+  bool _loading = false;
   String _email;
   String _password;
   String _confirmPassword;
@@ -21,10 +21,16 @@ class _SignUpPage extends State<SignUpPage> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
+      setState(() {
+        _loading = true;
+      });
       FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: _email, password: _password)
           .then((signedInUser) {
         UserManagement().storeNewUser(signedInUser, context);
+        setState(() {
+          _loading = false;
+        });
         //Navigator.of(context).pushReplacementNamed('/');
       }).catchError((e) {
         print(e.message);
@@ -191,46 +197,52 @@ class _SignUpPage extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomPadding: false,
-      body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              child: _buildPageTitleText(context),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            _buildLoginForm(),
-            Container(
-              child: Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.only(bottom: 15.0),
-                          child: IconButton(
-                            iconSize: 35.0,
-                            icon: Icon(
-                              Icons.close,
-                            ),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
+      body: _loading
+          ? Container(
+              child: Center(
+                child: CircularProgressIndicator(),
               ),
             )
-          ],
-        ),
-      ),
+          : Container(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: _buildPageTitleText(context),
+                  ),
+                  SizedBox(
+                    height: 15.0,
+                  ),
+                  _buildLoginForm(),
+                  Container(
+                    child: Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.only(bottom: 15.0),
+                                child: IconButton(
+                                  iconSize: 35.0,
+                                  icon: Icon(
+                                    Icons.close,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
     );
   }
 }

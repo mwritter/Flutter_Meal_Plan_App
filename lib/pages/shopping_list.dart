@@ -32,7 +32,7 @@ class ShoppingList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: ListView.builder(
-        itemCount: reduceList().length,
+        itemCount: list.length,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
