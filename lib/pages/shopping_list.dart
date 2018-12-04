@@ -89,7 +89,7 @@ class ShoppingList extends StatelessWidget {
             itemCount: updatedList.length,
             //"${map[updatedList.elementAt(index)]}  ${updatedList.elementAt(index)}"
             itemBuilder: (context, index) => ListTile(
-                  contentPadding: EdgeInsets.all(30.0),
+                  contentPadding: EdgeInsets.all(15.0),
                   leading: Container(
                     width: 30.0,
                     height: 30.0,

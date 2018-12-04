@@ -161,7 +161,14 @@ class _MealPlanPageState extends State<MealPlanPage> {
                                   widget.user.mealPlan[index].image),
                               fit: BoxFit.cover)),
                     )),
-                Text(widget.user.mealPlan[index].name),
+                Text(
+                  widget.user.mealPlan[index].name,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 30.0,
+                    color: Color(0xFF8A9098),
+                  ),
+                ),
               ],
             ),
           )),

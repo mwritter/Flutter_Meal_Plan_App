@@ -12,6 +12,7 @@ class DiscoverPage extends StatelessWidget {
   DiscoverPage(this.user, this.addMeal);
   Meal _makeMeal(databaseMeal) {
     return Meal(
+        instructions: databaseMeal["instructions"],
         description: databaseMeal["description"],
         id: databaseMeal.documentID,
         image: databaseMeal["image"],
@@ -36,7 +37,7 @@ class DiscoverPage extends StatelessWidget {
         margin: EdgeInsets.only(left: 00.0, right: 0.0, top: 0.0, bottom: 40.0),
         height: 130.0,
         child: Padding(
-          padding: const EdgeInsets.only(top: 25.0, left: 20),
+          padding: const EdgeInsets.only(top: 25.0, left: 10.0, right: 10.0),
           child: Material(
             color: Colors.transparent,
             child: Center(
@@ -57,8 +58,13 @@ class DiscoverPage extends StatelessWidget {
                     "Discover",
                     style: Style().greyHeadingStyle(),
                   ),
-                  SizedBox(
-                    width: deviceWidth,
+                  IconButton(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.search,
+                      color: Color(0xFF8A9098),
+                      size: 35.0,
+                    ),
                   ),
                 ],
               ),
@@ -69,18 +75,45 @@ class DiscoverPage extends StatelessWidget {
     );
   }
 
-  Widget _buildMealImage(image, index) {
+  Widget _buildMealImage(image, name, index) {
     return Hero(
       tag: "MealImage-$image$index",
       child: Container(
-        margin: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
-        height: 100.0,
-        width: 100.0,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(15.0),
-            image:
-                DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
-      ),
+          margin: EdgeInsets.only(top: 30.0, left: 10.0, right: 10.0),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              image: DecorationImage(
+                  image: NetworkImage(image), fit: BoxFit.cover)),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.all(5.0),
+                //width: double.infinity,
+                margin: EdgeInsets.only(top: 10.0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15.0),
+                  color: Color(0x8CFFFFFF),
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: Text(
+                    name,
+                    style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ],
+          )),
+
+      //Text(name),
     );
   }
 
@@ -114,10 +147,12 @@ class DiscoverPage extends StatelessWidget {
                                 addMeal)));
                       },
                       child: _buildMealImage(
-                          snapshot.data.documents[index]["image"], index),
+                          snapshot.data.documents[index]["image"],
+                          snapshot.data.documents[index]["name"],
+                          index),
                     ),
                 staggeredTileBuilder: (index) =>
-                    StaggeredTile.count(2, index.isEven ? 3 : 2),
+                    StaggeredTile.count(2, index.isEven ? 2 : 3),
                 mainAxisSpacing: 1.0,
                 crossAxisSpacing: 1.0,
               );

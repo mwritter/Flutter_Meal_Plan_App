@@ -92,21 +92,7 @@ class MealDetailPage extends StatelessWidget {
                   "Details",
                   style: Style().greyHeadingStyle(),
                 ),
-                actions: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: Icon(
-                        Icons.search,
-                        color: Color(0xFF8A9098),
-                        size: 35.0,
-                      ),
-                    ),
-                  ),
-                ],
+                actions: <Widget>[],
                 backgroundColor: Colors.white,
                 pinned: true,
                 floating: false,
@@ -134,9 +120,6 @@ class MealDetailPage extends StatelessWidget {
                           "Description",
                           style: Style().greenSubHeadingStyle(),
                         ),
-                        SizedBox(
-                          height: 20.0,
-                        ),
                         Text(
                           "${meal.description}",
                           style: Style().descriptionTextStyle(),
@@ -148,7 +131,22 @@ class MealDetailPage extends StatelessWidget {
                           "Ingredients",
                           style: Style().greenSubHeadingStyle(),
                         ),
-                        Text(makeIngredientsList())
+                        Text(makeIngredientsList()),
+                        meal.instructions != null
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Cooking Instructions",
+                                    style: Style().greenSubHeadingStyle(),
+                                  ),
+                                  Text("${meal.instructions}"),
+                                  SizedBox(
+                                    height: 100.0,
+                                  )
+                                ],
+                              )
+                            : Container()
                       ],
                     ),
                   ),

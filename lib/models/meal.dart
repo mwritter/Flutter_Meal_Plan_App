@@ -4,6 +4,13 @@ class Meal {
   final String description;
   final String image;
   List<dynamic> ingredients;
+  String instructions;
 
-  Meal({this.id, this.name, this.description, this.image, this.ingredients});
+  Meal(
+      {this.id,
+      this.name,
+      this.description,
+      this.image,
+      this.ingredients,
+      this.instructions});
 }
