@@ -6,3 +6,7 @@ A new Flutter application.
 
 For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
+
+![](assets/img/demo1.gif)
+
+![](assets/img/demo2.gif)
